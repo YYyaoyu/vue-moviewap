@@ -143,11 +143,50 @@ export default {
         }
       ],
       activeId: 1,
-      activeIndex: 0
+      activeIndex: 0,
+      arealist: [],
     };
   },
-  created() {},
+  created() {
+    this.getAreas();
+  },
   methods: {
+    getAreas() {
+      let that = this;
+      let data = {
+        cityid: '340100',
+      };
+      axios({
+        method: "post",
+        url: "/test/index.php/common/Region/getAreas",
+        data: qs.stringify(data)
+      })
+        .then(function(response) {
+          that.arealist = response.data;
+          that.getDistricts('340111');
+          
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
+    getDistricts(areaid) {
+      let that = this;
+      let data = {
+        areaid: areaid,
+      };
+      axios({
+        method: "post",
+        url: "/test/index.php/common/Region/getDistricts",
+        data: qs.stringify(data)
+      })
+        .then(function(response) {
+          
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
     getFilmList() {
       let that = this;
       let data = {

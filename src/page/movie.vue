@@ -46,7 +46,7 @@
       <van-tab title="影院">
         <van-dropdown-menu>
           <van-dropdown-item title="全城" ref="item">
-            <van-tree-select height="55vw" :items="items" :main-active-index.sync="activeIndex" />
+            <van-tree-select height="55vw" :items="ditems" :active-id.sync="activeId" :main-active-index.sync="activeIndex" />
           </van-dropdown-item>
           <van-dropdown-item title="筛选" ref="item">
             <div style="padding: 5px 16px;">
@@ -115,7 +115,7 @@ export default {
         { text: "综合排序", value: 2 }
       ],
       order: 1,
-      items: [
+      ditems: [
         {
           // 导航名称
           text: "所有城市",
@@ -142,46 +142,26 @@ export default {
           ]
         }
       ],
-      activeId: 1,
-      activeIndex: 0,
-      arealist: [],
+      activeId: '3401021',
+      activeIndex: 1,
     };
   },
   created() {
-    this.getAreas();
+    this.getDistricts('340100');
   },
   methods: {
-    getAreas() {
+    getDistricts(cityid) {
       let that = this;
       let data = {
-        cityid: '340100',
+        cityid: cityid,
       };
       axios({
         method: "post",
-        url: "/test/index.php/common/Region/getAreas",
+        url: "/test/index.php/common/Region/getTreeDistricts",
         data: qs.stringify(data)
       })
         .then(function(response) {
-          that.arealist = response.data;
-          that.getDistricts('340111');
-          
-        })
-        .catch(function(error) {
-          console.log(error);
-        });
-    },
-    getDistricts(areaid) {
-      let that = this;
-      let data = {
-        areaid: areaid,
-      };
-      axios({
-        method: "post",
-        url: "/test/index.php/common/Region/getDistricts",
-        data: qs.stringify(data)
-      })
-        .then(function(response) {
-          
+          that.ditems = response.data;
         })
         .catch(function(error) {
           console.log(error);
@@ -334,6 +314,17 @@ export default {
   padding: 10px 0;
 }
 .van-dropdown-menu /deep/ .van-ellipsis{
-  font-size: 0.9rem;
+  font-size: 0.95rem;
 }
+.van-tree-select__content /deep/ {
+  background-color: rgb(245,245,245);
+}
+.van-sidebar-item--select /deep/, .van-sidebar-item--select:active /deep/{
+  background-color: rgb(245,245,245) !important;
+}
+.van-tree-select__nav-item /deep/{
+  background-color: #fff;
+
+}
+
 </style>

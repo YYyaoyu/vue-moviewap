@@ -45,8 +45,14 @@
       </van-tab>
       <van-tab title="影院">
         <van-dropdown-menu>
-          <van-dropdown-item title="全城" ref="item">
-            <van-tree-select height="55vw" :items="ditems" :active-id.sync="activeId" :main-active-index.sync="activeIndex" />
+          <van-dropdown-item title="全城" ref="ditem" v-model="dvalue">
+            <van-tree-select
+              height="55vw"
+              :items="ditems"
+              :active-id.sync="activeId"
+              :main-active-index.sync="activeIndex"
+              @click-item="chooseCallback"
+            />
           </van-dropdown-item>
           <van-dropdown-item title="筛选" ref="item">
             <div style="padding: 5px 16px;">
@@ -73,13 +79,18 @@
                 style="overflow:hidden;"
               >
                 <div class="cinemaitem">
-                  <span style="color: #000;font-size: 1.1rem;font-weight: bold;margin-bottom: 6px;">{{item.name}}</span>
+                  <span
+                    style="color: #000;font-size: 1.1rem;font-weight: bold;margin-bottom: 6px;"
+                  >{{item.name}}</span>
                   <span style="color: rgb(255,156,28);">{{item.rate}}</span>
                 </div>
                 <div class="cinemaitem">{{item.address}}</div>
-                <div class="cinemaitem"><span style="display:inline-block;font-size: 0.8rem;border: 2px solid rgb(202, 202, 202);padding: 2px;
-    transform: scale(0.8);">{{item.item}}</span></div>
-                
+                <div class="cinemaitem">
+                  <span
+                    style="display:inline-block;font-size: 0.8rem;border: 2px solid rgb(202, 202, 202);padding: 2px;
+    transform: scale(0.8);"
+                  >{{item.item}}</span>
+                </div>
               </li>
             </ul>
           </van-list>
@@ -142,18 +153,20 @@ export default {
           ]
         }
       ],
-      activeId: '3401021',
-      activeIndex: 1,
+      dvalue: '',
+      activeId: "0",
+      activeIndex: 0,
+      districtid: ""
     };
   },
   created() {
-    this.getDistricts('340100');
+    this.getDistricts("340100");
   },
   methods: {
     getDistricts(cityid) {
       let that = this;
       let data = {
-        cityid: cityid,
+        cityid: cityid
       };
       axios({
         method: "post",
@@ -201,7 +214,8 @@ export default {
       let that = this;
       let data = {
         page: that.cinemapage,
-        num: 10
+        num: 10,
+        districtid: this.districtid
       };
       axios({
         method: "post",
@@ -244,6 +258,14 @@ export default {
       this.isrefreshcinema = true;
       this.finishedcinema = false;
       this.getCinemaList();
+    },
+    chooseCallback(data) {
+      console.log(data);
+      this.districtid = data.id;
+      this.dvalue = data.value;
+      console.log(this.dvalue)
+      this.getCinemaList();
+      this.$refs.ditem.toggle();
     }
   }
 };
@@ -251,7 +273,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
 .van-search {
   float: right;
   width: calc(100% - 52px);
@@ -300,7 +321,7 @@ export default {
 .moviedetail h4 {
   margin-bottom: 8px;
 }
-.cinemaitem{
+.cinemaitem {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -309,22 +330,21 @@ export default {
   color: rgb(90, 90, 90);
   margin-bottom: 4px;
 }
-.cinemalist li{
+.cinemalist li {
   border-top: 1px solid rgb(248, 248, 248);
   padding: 10px 0;
 }
-.van-dropdown-menu /deep/ .van-ellipsis{
+.van-dropdown-menu /deep/ .van-ellipsis {
   font-size: 0.95rem;
 }
 .van-tree-select__content /deep/ {
-  background-color: rgb(245,245,245);
+  background-color: rgb(245, 245, 245);
 }
-.van-sidebar-item--select /deep/, .van-sidebar-item--select:active /deep/{
-  background-color: rgb(245,245,245) !important;
+.van-sidebar-item--select /deep/,
+.van-sidebar-item--select:active /deep/ {
+  background-color: rgb(245, 245, 245) !important;
 }
-.van-tree-select__nav-item /deep/{
+.van-tree-select__nav-item /deep/ {
   background-color: #fff;
-
 }
-
 </style>

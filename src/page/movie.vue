@@ -263,7 +263,6 @@ export default {
       console.log(data);
       this.districtid = data.id;
       this.dvalue = data.value;
-      console.log(this.dvalue)
       this.getCinemaList();
       this.$refs.ditem.toggle();
     }

@@ -55,6 +55,19 @@
             />
           </van-dropdown-item>
           <van-dropdown-item title="筛选" ref="item">
+            <div class="condition">
+              <span>影院服务</span>
+              <div class="ccontent">
+                <van-tag
+                  v-for="(item,index) in itemTips"
+                  :key="item"
+                  color="rgb(245,245,245)"
+                  text-color="#000000"
+                  size="medium"
+                  @click="chooseItem"
+                >{{item}}</van-tag>
+              </div>
+            </div>
             <div style="padding: 5px 16px;">
               <van-button type="danger" block round>确认</van-button>
             </div>
@@ -153,14 +166,17 @@ export default {
           ]
         }
       ],
-      dvalue: '',
+      dvalue: "",
       activeId: "0",
       activeIndex: 0,
-      districtid: ""
+      districtid: "",
+      itemTips: [],
+      itemTip: ''
     };
   },
   created() {
     this.getDistricts("340100");
+    this.getConditionTips();
   },
   methods: {
     getDistricts(cityid) {
@@ -215,7 +231,8 @@ export default {
       let data = {
         page: that.cinemapage,
         num: 10,
-        districtid: this.districtid
+        districtid: this.districtid,
+        itemTip: this.itemTip
       };
       axios({
         method: "post",
@@ -236,6 +253,21 @@ export default {
           }
           that.isloadingcinema = false;
           that.isrefreshcinema = false;
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
+    getConditionTips() {
+      let that = this;
+
+      axios({
+        method: "post",
+        url: "/test/index.php/admin/CinemaInfo/getConditionTips"
+      })
+        .then(function(response) {
+          that.itemTips = response.data.item;
+          console.log(that.itemTips);
         })
         .catch(function(error) {
           console.log(error);
@@ -265,6 +297,10 @@ export default {
       this.dvalue = data.value;
       this.getCinemaList();
       this.$refs.ditem.toggle();
+    },
+    chooseItem(e) {
+      this.itemTip = e.target.innerText;
+      this.getCinemaList();
     }
   }
 };
@@ -345,5 +381,19 @@ export default {
 }
 .van-tree-select__nav-item /deep/ {
   background-color: #fff;
+}
+.condition .van-tag {
+  display: inline-block;
+  width: 30%;
+  text-align: center;
+  margin-bottom: 10px;
+}
+.condition {
+  padding: 12px;
+}
+.condition .ccontent {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
 }
 </style>
